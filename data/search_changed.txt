@@ -1,0 +1,45 @@
+void search(Node *curNode,double k,ofstream& o_file) {
+    if (!curNode->isleaf) {
+        int flag = 0;
+        for (int i = 0; i<curNode->keys.size();i++) {
+            if (k < curNode->keys.at(i)) {
+                flag = 1;
+                search(curNode->children.at(i),k,o_file);
+                break;
+            }
+        }
+        if (flag == 0) {
+            search(curNode->children.at(curNode->children.size()-1),k,o_file);  
+        }
+    }
+    else {
+        //cout<<"I am a sahab tbh"<<curNode->record.size()<<endl;
+        int found = 0;
+        for (int i = 0 ;i<curNode->record.size();i++) {
+            if (k == get<0>(curNode->record.at(i))) {
+				o_file << get<1>(curNode->record.at(i));
+
+				if(i+1 < curNode->record.size() && k != get<0>(curNode->record.at(i+1))){
+					// single value in key
+					 o_file << endl;
+				}
+				else if(i+1 < curNode->record.size() && k == get<0>(curNode->record.at(i+1))){
+					// multiple values with same key
+					while(i+1 < curNode->record.size() && k == get<0>(curNode->record.at(i+1))){
+	                	o_file << "," << get<1>(curNode->record.at(++i));
+					}
+					o_file << endl;
+				}				
+
+    	        found = 1;
+                break;
+            }
+        }
+        if (found == 0)
+        {
+            //cout << "NULL"<<endl;
+            o_file << "NULL" <<endl;
+        }            
+    }
+}
+
